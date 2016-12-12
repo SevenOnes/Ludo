@@ -33,7 +33,7 @@ public class MainMenu extends Application {
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-        Scene scene = new Scene(root, 800, 600, Color.WHITE);
+        Scene scene = new Scene(root, 1200, 800, Color.WHITE);
         primaryStage.setScene(scene);
         
         Group circles = new Group();
@@ -70,12 +70,12 @@ public class MainMenu extends Application {
         for (Node circle: circles.getChildren()) {
             timeline.getKeyFrames().addAll(
                 new KeyFrame(Duration.ZERO, // set start position at 0
-                    new KeyValue(circle.translateXProperty(), Math.random() * 800),
-                    new KeyValue(circle.translateYProperty(), Math.random() * 600)
+                    new KeyValue(circle.translateXProperty(), Math.random() * 1200),
+                    new KeyValue(circle.translateYProperty(), Math.random() * 800)
                 ),
                 new KeyFrame(new Duration(40000), // set end position at 40s
-                    new KeyValue(circle.translateXProperty(), Math.random() * 800),
-                    new KeyValue(circle.translateYProperty(), Math.random() * 600)
+                    new KeyValue(circle.translateXProperty(), Math.random() * 1200),
+                    new KeyValue(circle.translateYProperty(), Math.random() * 800)
                 )
             );
         }
@@ -100,6 +100,16 @@ public class MainMenu extends Application {
                 	  btn.setEffect(shadow);
                   }
                 });
+
+
+        btn.addEventHandler(MouseEvent.MOUSE_EXITED,
+                new EventHandler<MouseEvent>() {
+                  @Override
+                  public void handle(MouseEvent e) {
+                	  btn.setEffect(null);
+                  }
+                });
+        
         
         btn.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 new EventHandler<MouseEvent>() {
@@ -107,14 +117,6 @@ public class MainMenu extends Application {
                   public void handle(MouseEvent e) {
                 	  GamePanel gp = new GamePanel();
                 	  gp.start(primaryStage);
-                  }
-                });
-
-        btn.addEventHandler(MouseEvent.MOUSE_EXITED,
-                new EventHandler<MouseEvent>() {
-                  @Override
-                  public void handle(MouseEvent e) {
-                	  btn.setEffect(null);
                   }
                 });
         
