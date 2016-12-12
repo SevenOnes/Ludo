@@ -94,7 +94,7 @@ public class Board {
 			str += houses.get(i).toString() + "\n";
 		}
 		for(int i = 0; i < slots.length; i++){
-			str += slots[i].toString() + "\n";
+			str += "index is "+ i + "\t"+ slots[i].toString() + "\n";
 		}
 		
 		return str;
@@ -107,6 +107,36 @@ public class Board {
 	public static void main(String[] arg){
 		Board board = new Board(1);
 		System.out.println(board);
+	}
+
+
+
+	public ArrayList<House> getHouses() {
+		return houses;
+	}
+
+
+
+	public Slot[] getSlots() {
+		return slots;
+	}
+
+
+
+	public Slot[][] getEndingSlots() {
+		return endingSlots;
+	}
+
+
+
+	public int getMapId() {
+		return mapId;
+	}
+
+
+
+	public Die getDie() {
+		return die;
 	}
 	
 }
