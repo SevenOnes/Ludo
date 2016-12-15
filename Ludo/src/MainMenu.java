@@ -1,15 +1,16 @@
  
-import java.util.ArrayList;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
@@ -17,6 +18,8 @@ import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -26,18 +29,34 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
  
 public class MainMenu extends Application {
 	 DropShadow shadow = new DropShadow();
+	 double scale = 1;
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
         Scene scene = new Scene(root, 1200, 800, Color.WHITE);
         primaryStage.setScene(scene);
         
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+        
+        Rectangle closeBtn = new Rectangle(30*scale,30*scale,Color.RED);
+
+        closeBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
+               new EventHandler<MouseEvent>() {
+                 @Override
+                 public void handle(MouseEvent e) {
+               	  	Platform.exit();
+                 }
+               });
+        closeBtn.setLayoutX(1170*scale);
+
+        
         Group circles = new Group();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 40; i++) {
            Circle circle = new Circle(150, Color.web("white", 0.05));
            circle.setStrokeType(StrokeType.OUTSIDE);
            circle.setStroke(Color.web("white", 0.16));
@@ -59,10 +78,11 @@ public class MainMenu extends Application {
         	            new Stop(1, Color.web("#f2660f")),}));
         	colors.widthProperty().bind(scene.widthProperty());
         	colors.heightProperty().bind(scene.heightProperty());
-        	
+        
+   
         Group blendModeGroup = 
         		  new Group(new Group(new Rectangle(scene.getWidth(), scene.getHeight(),
-        		       Color.BLACK), circles), colors);
+        		       Color.BLACK), circles)	, colors);
         colors.setBlendMode(BlendMode.OVERLAY);
         root.getChildren().add(blendModeGroup);
         
@@ -130,11 +150,17 @@ public class MainMenu extends Application {
         
         root.getChildren().add(iv);
         timeline.play();
+        root.getChildren().add(closeBtn);
         primaryStage.show();
+        
        
     }
     
 public static void main(String[] args) {
         launch(args);
     }
+
+class WindowButtons extends Rectangle {
+    
+}
 }

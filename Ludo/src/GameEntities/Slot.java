@@ -6,23 +6,34 @@
 
 package GameEntities;
 
+import java.util.ArrayList;
+
 public class Slot {
 	
 	//Properties
 	private boolean occupied;
-	private Token insideToken;
+	private ArrayList<Token> insideToken;
 	
 	// Constructor
 	public Slot(){
 		occupied = false;
-		insideToken = null;
+		insideToken = new ArrayList<Token>();
 	}
 	
+	
 	public Token retriveToken(){
-		Token returnToken = insideToken;
-		insideToken = null;
-		occupied = false;
-		return returnToken;
+		if(!insideToken.isEmpty()){
+			Token returnToken = insideToken.get(0);
+			if(insideToken.isEmpty()){
+				setOccupied(false);
+			}
+			
+			return returnToken;
+		}
+		else{
+			return null;
+		}
+			
 	}
 
 	public boolean isOccupied() {
@@ -33,12 +44,12 @@ public class Slot {
 		this.occupied = occupied;
 	}
 
-	public Token getInsideToken() {
+	public ArrayList<Token> getInsideToken() {
 		return insideToken;
 	}
 
-	public void setInsideToken(Token insideToken) {
-		this.insideToken = insideToken;
+	public void addInsideToken(Token insideToken) {
+		this.insideToken.add(insideToken);
 		setOccupied(true);
 	}
 	

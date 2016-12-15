@@ -21,6 +21,7 @@ public class Board {
 
 	public Board(int mapId){
 		this.mapId = mapId;
+		die = new Die();
 		
 		houses = new ArrayList<House>();
 		for(int i = 0; i < 4 ; i++){
@@ -83,7 +84,7 @@ public class Board {
 			}
 		}
 		
-		Die die = new Die();
+
 	}
 	
 

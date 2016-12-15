@@ -24,6 +24,7 @@ public class House {
 		}
 	}
 	
+	
 	public Token retriveToken(){
 		int last = tokens.size() -1 ;
 		Token lastToken = tokens.get(last);
