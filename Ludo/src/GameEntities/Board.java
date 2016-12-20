@@ -86,9 +86,9 @@ public class Board {
 			//TO-DO not implemented
 		}
 		//Ending Slots declearation
-		endingSlots = new Slot[4][5];
+		endingSlots = new Slot[4][6];
 		for(int i =0 ; i < 4 ; i++){
-			for(int k = 0; k < 5 ; k++){
+			for(int k = 0; k < 6 ; k++){
 				endingSlots[i][k] = new Slot();
 			}
 		}

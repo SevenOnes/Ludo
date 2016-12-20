@@ -39,7 +39,7 @@ public class House {
 	}
 	
 	public boolean isEmpty(){
-		return !(tokens.isEmpty());
+		return tokens.isEmpty();
 	}
 	
 	// This method add a newtoken to list
