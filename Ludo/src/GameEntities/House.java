@@ -17,7 +17,9 @@ public class House {
 	
 	// Constuructor
 	public House(String color) {
+		// Creating new ArrayList 
 		tokens = new ArrayList<Token>();
+		//Creating 4(MAXTOKEN) token putting in arraylist
 		for(int i = 0; i < MAXTOKEN; i++){
 			Token newToken = new Token(color);
 			tokens.add(newToken);
@@ -26,19 +28,21 @@ public class House {
 	
 	
 	public Token retriveToken(){
-		int last = tokens.size() -1 ;
-		Token lastToken = tokens.get(last);
-		tokens.remove(last);
-		return lastToken;
+		
+		if(!tokens.isEmpty()){
+			int last = tokens.size() -1 ;			// geting last index
+			Token lastToken = tokens.get(last);		// geting last index
+			tokens.remove(last);					// removing from list
+			return lastToken;						// returning removed item;
+		}		
+		return null;
 	}
 	
 	public boolean isEmpty(){
-		if(tokens.size() == 0){
-			return true;
-		}
-		return false;
+		return !(tokens.isEmpty());
 	}
 	
+	// This method add a newtoken to list
 	public void addToken(Token newToken){
 		tokens.add(newToken);
 	}

@@ -9,8 +9,8 @@ package GameEntities;
 public class Token {
 	
 	// Properties
-	private String color;
-	private boolean available;
+	private String color;		// This is about owner relation
+	private boolean available;	// This is related to movement
 	
 	// Constructor with color
 	public Token(String color){

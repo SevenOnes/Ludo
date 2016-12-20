@@ -9,23 +9,16 @@ package GameEntities;
 public class StartingSlot extends Slot {
 
 	//Private
-	private String color; 
-	private int mapId;
+	private String color;
 	
 	//Constructor
-	public StartingSlot(int mapId,String color) {
+	public StartingSlot(String color) {
 		super();
 		this.color = color;
-		this.mapId = mapId;
-		
 	}
 
 	public String getColor() {
 		return color;
-	}
-
-	public int getMapId() {
-		return mapId;
 	}
 	
 	public String toString(){

@@ -38,7 +38,7 @@ public class MainMenu extends Application {
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-        Scene scene = new Scene(root, 1200, 800, Color.WHITE);
+        Scene scene = new Scene(root, 1200*scale, 800*scale, Color.WHITE);
         primaryStage.setScene(scene);
         
         primaryStage.initStyle(StageStyle.UNDECORATED);
@@ -57,7 +57,7 @@ public class MainMenu extends Application {
         
         Group circles = new Group();
         for (int i = 0; i < 40; i++) {
-           Circle circle = new Circle(150, Color.web("white", 0.05));
+           Circle circle = new Circle(150*scale, Color.web("white", 0.05));
            circle.setStrokeType(StrokeType.OUTSIDE);
            circle.setStroke(Color.web("white", 0.16));
            circle.setStrokeWidth(4);
@@ -90,27 +90,23 @@ public class MainMenu extends Application {
         for (Node circle: circles.getChildren()) {
             timeline.getKeyFrames().addAll(
                 new KeyFrame(Duration.ZERO, // set start position at 0
-                    new KeyValue(circle.translateXProperty(), Math.random() * 1200),
-                    new KeyValue(circle.translateYProperty(), Math.random() * 800)
+                    new KeyValue(circle.translateXProperty(), Math.random() * 1200*scale),
+                    new KeyValue(circle.translateYProperty(), Math.random() * 800*scale)
                 ),
                 new KeyFrame(new Duration(40000), // set end position at 40s
-                    new KeyValue(circle.translateXProperty(), Math.random() * 1200),
-                    new KeyValue(circle.translateYProperty(), Math.random() * 800)
+                    new KeyValue(circle.translateXProperty(), Math.random() * 1200*scale),
+                    new KeyValue(circle.translateYProperty(), Math.random() * 800*scale)
                 )
             );
         }
         
         Image image1 = new Image("file:Ludo.png",true);
         ImageView iv = new ImageView(image1);
-        
-        Reflection r = new Reflection();
-        r.setFraction(0.9);
- 
-        iv.setEffect(r);
-        iv.setX(285);
-        iv.setY(250);
-        iv.setScaleX(1.25);
-        iv.setScaleY(1.25);
+
+        iv.setX(scene.getWidth()/2-220*scale);
+        iv.setY(200*scale);
+        iv.setScaleX(1*scale);
+        iv.setScaleY(1*scale);
         
         Button btn = new Button("Go to Game");
         btn.addEventHandler(MouseEvent.MOUSE_ENTERED,
@@ -135,15 +131,16 @@ public class MainMenu extends Application {
                 new EventHandler<MouseEvent>() {
                   @Override
                   public void handle(MouseEvent e) {
-                	  GamePanel gp = new GamePanel();
+                	  GamePanel gp = new GamePanel(1);
                 	  gp.start(primaryStage);
                   }
                 });
         
         VBox vbox = new VBox();
-        vbox.setLayoutX(285);
-        vbox.setLayoutY(350);
-        
+        vbox.setLayoutX(scene.getWidth()/2-120*scale);
+        vbox.setLayoutY(scene.getHeight()/2-60*scale);
+        vbox.setScaleX(scale);
+        vbox.setScaleY(scale);
         vbox.getChildren().add(btn);
         vbox.setSpacing(10);
         root.getChildren().add(vbox);

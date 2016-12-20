@@ -35,7 +35,7 @@ public class GamePanel extends Application {
 	private Board board ;
 	private Group slots;
 
-	private double scale = 1;
+	private double scale;
 	private Group[] endingSlots;
 	Group root = new Group();
 	Group big_root = new Group();
@@ -56,11 +56,11 @@ public class GamePanel extends Application {
 	boolean clicked ;
 	boolean selected ;
 
-	public GamePanel(){
+	public GamePanel(double scale){
 
 		board = new Board(1);
 
-		scale = 1;
+		this.scale = scale;
 		root = new Group();
 		big_root = new Group();
 		effect_group = new Group();
@@ -365,14 +365,18 @@ public class GamePanel extends Application {
 		root.getChildren().add(house_yellow);
 		Token tmp = board.getHouses().get(1).retriveToken();
 		Slot[] tmp2 = board.getSlots();
-		tmp2[1].addInsideToken(tmp);
+		tmp2[0].addInsideToken(tmp);
+		tmp = board.getHouses().get(0).retriveToken();
+		tmp2[0].addInsideToken(tmp);
+		tmp = board.getHouses().get(1).retriveToken();
+		tmp2[0].addInsideToken(tmp);
+		tmp = board.getHouses().get(2).retriveToken();
+		tmp2[0].addInsideToken(tmp);
+		tmp = board.getHouses().get(3).retriveToken();
+		tmp2[0].addInsideToken(tmp);
 		tmp = board.getHouses().get(0).retriveToken();
 		tmp2[2].addInsideToken(tmp);
 		tmp = board.getHouses().get(0).retriveToken();
-		board.getEndingSlots()[0][0].addInsideToken(tmp);
-		tmp = board.getHouses().get(0).retriveToken();
-		board.getEndingSlots()[0][1].addInsideToken(tmp);
-		tmp = board.getHouses().get(3).retriveToken();
 		tmp2[5].addInsideToken(tmp);
 		tmp = board.getHouses().get(1).retriveToken();
 		board.getEndingSlots()[1][2].addInsideToken(tmp);
@@ -399,7 +403,7 @@ public class GamePanel extends Application {
 		die_group.getChildren().add(roll_die);
 		Text t = new Text();
 		t.setText("Roll a die");
-		t.setFont(Font.font(20));
+		t.setFont(Font.font(20*scale));
 		t.setFill(Color.WHITE);
 		die_group.getChildren().add(t);
 		t.setLayoutX(925*scale);
@@ -407,7 +411,7 @@ public class GamePanel extends Application {
 		
 		Text die = new Text();
 		die.setText("");
-		die.setFont(Font.font(75));
+		die.setFont(Font.font(75*scale));
 		die.setFill(Color.BLACK);
 		die.setLayoutX(950*scale);
 		die.setLayoutY(250*scale);
@@ -428,6 +432,9 @@ public class GamePanel extends Application {
 		updateHouses();
 		updateSlots();
 		updateEndingSlots();
+		for(int i = 0; i < clicked_token.length; i++){
+			clicked_token[i] = 0;
+		}
 	}
 
 	public void updateHouses() {
@@ -490,12 +497,52 @@ public class GamePanel extends Application {
 				}
 				if (i == 0) {
 					house_red_tokens.getChildren().add(circle);
+					circle.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+							clicked_token[0] = 2;
+							clicked_token[1] = 0;
+							clicked_token[2] = 0;
+							clicked_token[3] = 0;
+							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
+						}
+					});
 				} else if (i == 1) {
 					house_yellow_tokens.getChildren().add(circle);
+					circle.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+							clicked_token[0] = 2;
+							clicked_token[1] = 1;
+							clicked_token[2] = 0;
+							clicked_token[3] = 0;
+							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
+						}
+					});
 				} else if (i == 2) {
 					house_green_tokens.getChildren().add(circle);
+					circle.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+							clicked_token[0] = 2;
+							clicked_token[1] = 2;
+							clicked_token[2] = 0;
+							clicked_token[3] = 0;
+							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
+						}
+					});
 				} else if (i == 3) {
 					house_blue_tokens.getChildren().add(circle);
+					circle.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+							clicked_token[0] = 2;
+							clicked_token[1] = 3;
+							clicked_token[2] = 0;
+							clicked_token[3] = 0;
+							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
+						}
+					});
 				}
 
 			}
@@ -668,7 +715,6 @@ public class GamePanel extends Application {
 		int player;
 		int pos;
 		
-		
 		public popUpTokens(ArrayList<Token> a,int ending ,int player ,int pos , double x2, double y2, Color c) {
 			this.a = a;
 			this.x = x2;
@@ -684,7 +730,6 @@ public class GamePanel extends Application {
 		public void handle(Event event) {
 			for (int i = 0; i < a.size(); i++) {
 				clicked_token[0] = ending;
-				clicked_token[1] = player;
 				clicked_token[2] = pos;
 				clicked = true;
 				Circle circle_back = new Circle(25 * scale, Color.GRAY);
@@ -713,6 +758,15 @@ public class GamePanel extends Application {
 					@Override
 					public void handle(MouseEvent e) {
 						Circle a = (Circle)(e.getSource());
+						if(a.getFill() == Color.RED){
+							clicked_token[1] = 0;
+						}else if(a.getFill() == Color.YELLOW){
+							clicked_token[1] = 1;
+						}else if(a.getFill() == Color.GREEN){
+							clicked_token[1] = 2;
+						}else if(a.getFill() == Color.BLUE){
+							clicked_token[1] = 3;
+						}
 						clicked_token[3] = Integer.parseInt(a.getId());
 						for(int i =0 ; i < clicked_token.length;i++){
 							System.out.println(clicked_token[i]);

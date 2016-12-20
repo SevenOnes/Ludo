@@ -1,25 +1,23 @@
+/**
+ *	Author  : Ahmet Taha Albayrak
+ * 	Version : v1.1	
+ * 	Date	: 20 / 11 / 2016
+ */
 package GameEntities;
 
 public class EndingSlot extends Slot {
 	
 	//Private
 	private String color; 
-	private int mapId;
 	
 	//Constructor
-	public EndingSlot(int mapId,String color) {
+	public EndingSlot(String color) {
 		super();
 		this.color = color;
-		this.mapId = mapId;
-		
 	}
 
 	public String getColor() {
 		return color;
-	}
-
-	public int getMapId() {
-		return mapId;
 	}
 	
 	public String toString(){

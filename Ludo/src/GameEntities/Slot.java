@@ -11,23 +11,21 @@ import java.util.ArrayList;
 public class Slot {
 	
 	//Properties
-	private boolean occupied;
 	private ArrayList<Token> insideToken;
 	
 	// Constructor
 	public Slot(){
-		occupied = false;
 		insideToken = new ArrayList<Token>();
 	}
 	
 	
-	public Token retriveToken(){
+	public Token retriveToken(int tokenNumber){
+		// Checking if it empty arraylist or not
 		if(!insideToken.isEmpty()){
-			Token returnToken = insideToken.get(0);
-			if(insideToken.isEmpty()){
-				setOccupied(false);
-			}
-			
+			// getting token from array
+			Token returnToken = insideToken.get(tokenNumber);
+			// Removing from in arraylist
+			insideToken.remove(tokenNumber);
 			return returnToken;
 		}
 		else{
@@ -37,24 +35,22 @@ public class Slot {
 	}
 
 	public boolean isOccupied() {
-		return occupied;
+		// Basically return if there is anything in there
+		return !(insideToken.isEmpty());
 	}
 
-	public void setOccupied(boolean occupied) {
-		this.occupied = occupied;
-	}
-
-	public ArrayList<Token> getInsideToken() {
+	public ArrayList<Token> getInsideToken(){
+		// This let get arraylist in array
 		return insideToken;
 	}
 
-	public void addInsideToken(Token insideToken) {
-		this.insideToken.add(insideToken);
-		setOccupied(true);
+	public void addInsideToken(Token toInside) {
+		// add the token in the arraylist 
+		insideToken.add(toInside);
 	}
 	
 	public String toString(){
-		return "This is a standart slot with Occupied " + occupied ;
+		return "This is a standart slot with Occupied " + isOccupied() ;
 	}
 	
 	
