@@ -1,9 +1,8 @@
 package GameManagement;
 import java.util.ArrayList;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 import GameEntities.Board;
-import GameEntities.Die;
 import GameEntities.House;
 import GameEntities.Slot;
 import GameEntities.Token;
@@ -12,10 +11,12 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
@@ -57,10 +58,11 @@ public class GamePanel extends Application {
 
 	final int TOKENINHOUSE = 4;
 	boolean clicked;
-	boolean selected ;
+	boolean selected;
 	boolean rolled;
+	GameManager gm;
 
-	public GamePanel(double scale){
+	public GamePanel(double scale,GameManager gm){
 
 		board = new Board(1);
 		/*this.lock1 = lock1;
@@ -83,18 +85,9 @@ public class GamePanel extends Application {
 		clicked_token = new int[4];
 		clicked = false;
 		selected = false;
+		this.gm = gm;
 		
 	}
-	public boolean isRolled() {
-		return rolled;
-	}
-	public void setRolled(boolean rolled) {
-		this.rolled = rolled;
-	}
-	public Board getBoard() {
-		return board;
-	}
-	@Override
 	public void start(Stage primaryStage) {
 
 		Scene scene = new Scene(big_root, 1200 * scale, 800 * scale, Color.WHITE);
@@ -435,12 +428,16 @@ public class GamePanel extends Application {
 		die_group.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				board.getDie().roll();
-				die.setText(""+board.getDie().getfaceValue());
-				setRolled(true);
+				if(!isRolled()){
+					board.getDie().roll();
+					die.setText(""+board.getDie().getfaceValue());
+					setRolled(true);
+				}
 			}
 		});
+		Platform.runLater(gm);
 		
+
 	
 	}
 
@@ -451,6 +448,7 @@ public class GamePanel extends Application {
 		for(int i = 0; i < clicked_token.length; i++){
 			clicked_token[i] = -1;
 		}
+		
 	}
 
 	public void updateHouses() {
@@ -528,7 +526,6 @@ public class GamePanel extends Application {
 							clicked_token[1] = 0;
 							clicked_token[2] = 0;
 							clicked_token[3] = 0;
-							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
 						}
 					});
 				} else if (i == 1) {
@@ -540,7 +537,6 @@ public class GamePanel extends Application {
 							clicked_token[1] = 1;
 							clicked_token[2] = 0;
 							clicked_token[3] = 0;
-							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
 						}
 					});
 				} else if (i == 2) {
@@ -552,7 +548,6 @@ public class GamePanel extends Application {
 							clicked_token[1] = 2;
 							clicked_token[2] = 0;
 							clicked_token[3] = 0;
-							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
 						}
 					});
 				} else if (i == 3) {
@@ -564,7 +559,6 @@ public class GamePanel extends Application {
 							clicked_token[1] = 3;
 							clicked_token[2] = 0;
 							clicked_token[3] = 0;
-							System.out.println(clicked_token[0] + "  , " + clicked_token[1]);
 						}
 					});
 				}
@@ -671,6 +665,8 @@ public class GamePanel extends Application {
 	public void updateEndingSlots() {
 		if (root.getChildren().contains(endingSlot_tokens)) {
 			int index = root.getChildren().indexOf(endingSlot_tokens);
+			Group group = (Group)root.getChildren().get(index);
+			group.getChildren().clear();
 			root.getChildren().remove(index);
 		}
 		double x = 90 * scale;
@@ -726,8 +722,6 @@ public class GamePanel extends Application {
 		}
 		root.getChildren().add(endingSlot_tokens);
 	}
-
-
 
 	private class popUpTokens implements EventHandler {
 
@@ -792,11 +786,10 @@ public class GamePanel extends Application {
 							clicked_token[1] = 3;
 						}
 						clicked_token[3] = Integer.parseInt(a.getId());
-						for(int i =0 ; i < clicked_token.length;i++){
-							System.out.println(clicked_token[i]);
-						}
-						
 						selected = true;
+						root.setEffect(null);
+						effect_group.getChildren().clear();
+						clicked = false;
 					}
 				});
 				timeline.play();
@@ -821,4 +814,24 @@ public class GamePanel extends Application {
 
 		}
 	}
+
+	public boolean isRolled() {
+		return rolled;
+	}
+	public void setRolled(boolean rolled) {
+		this.rolled = rolled;
+	}
+	public Board getBoard() {
+		return board;
+	}
+	public boolean isSelected() {
+		if(clicked_token[3] == -1)
+			return false;
+		return true;
+	}
+	public int[] getClicked_token() {
+		return clicked_token;
+	}
+	
+	
 }

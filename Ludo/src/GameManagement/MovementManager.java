@@ -1,6 +1,9 @@
 package GameManagement;
 
+import java.util.ArrayList;
+
 import GameEntities.Board;
+import GameEntities.House;
 import GameEntities.Slot;
 import GameEntities.Token;
 
@@ -42,7 +45,7 @@ public class MovementManager {
 						}
 					}else if(playerID == 3){
 						for(int k = 0;k < slots[i].getInsideToken().size();k++){
-							if(slots[i].getInsideToken().get(k).getColor().equals("Green")){
+							if(slots[i].getInsideToken().get(k).getColor().equals("Blue")){
 								slots[i].getInsideToken().get(k).setAvailable(true);
 								flag = true;
 							}
@@ -69,6 +72,7 @@ public class MovementManager {
 	}
 
 	public boolean move (int playerID,Board b, int initialPos, int faceValue,int indexOfElement){
+		System.out.println(playerID + " " + initialPos + " " + faceValue + " " + indexOfElement);
 		if(initialPos == -1){
 			if(!b.getHouses().get(playerID).isEmpty()){
 				Token token = b.getHouses().get(playerID).getTokens().get(0);
@@ -124,7 +128,7 @@ public class MovementManager {
 					if(initialPos <=11 &&faceValue + initialPos > 11){
 						b.getEndingSlots()[playerID][faceValue + initialPos-12].addInsideToken(token);
 					}else{
-						if(initialPos+faceValue == 0 || initialPos+faceValue == 13 
+						if((initialPos+faceValue)%52 == 0 || initialPos+faceValue == 13 
 								|| initialPos+faceValue == 26 || initialPos+faceValue == 39){
 							b.getSlots()[initialPos+faceValue].addInsideToken(token);
 						}else if(b.getSlots()[(initialPos+faceValue)%52].isOccupied()){
@@ -152,7 +156,7 @@ public class MovementManager {
 					if(initialPos <= 24 &&faceValue + initialPos > 24){
 						b.getEndingSlots()[playerID][faceValue + initialPos-25].addInsideToken(token);
 					}else{
-						if(initialPos+faceValue == 0 || initialPos+faceValue == 13 
+						if((initialPos+faceValue)%52 == 0 || initialPos+faceValue == 13 
 								|| initialPos+faceValue == 26 || initialPos+faceValue == 39){
 							b.getSlots()[(initialPos+faceValue)%52].addInsideToken(token);
 						}else if(b.getSlots()[(initialPos+faceValue)%52].isOccupied()){
@@ -177,10 +181,12 @@ public class MovementManager {
 						}
 					}
 				}else if(playerID == 3){
+
+					System.out.println(initialPos +" , " + faceValue);
 					if(initialPos <= 37 &&faceValue + initialPos > 37){
-						b.getEndingSlots()[playerID][faceValue + initialPos-51].addInsideToken(token);
+						b.getEndingSlots()[playerID][faceValue + initialPos-37].addInsideToken(token);
 					}else{
-						if(initialPos+faceValue == 0 || initialPos+faceValue == 13 
+						if((initialPos+faceValue)%52 == 0 || initialPos+faceValue == 13 
 								|| initialPos+faceValue == 26 || initialPos+faceValue == 39){
 							b.getSlots()[(initialPos+faceValue)%52].addInsideToken(token);
 						}else if(b.getSlots()[(initialPos+faceValue)%52].isOccupied()){
@@ -205,8 +211,33 @@ public class MovementManager {
 						}
 					}
 				}
+				return true;
+			}
+			else{
+				return false;
 			}
 		}
 		return false;
+	}
+
+	public void makeUnAvaliable(Board b){
+		for(int i = 0 ; i < b.getHouses().size(); i++){
+			for(int k =0 ; k <  b.getHouses().get(i).getTokens().size() ; k++){
+				b.getHouses().get(i).getTokens().get(k).setAvailable(false);
+			}
+		}
+		for(int i = 0 ; i < b.getSlots().length; i++){
+			for(int k =0 ; k < b.getSlots()[i].getInsideToken().size() ; k++){
+				 b.getSlots()[i].getInsideToken().get(k).setAvailable(false);
+			}
+		}
+		for(int i = 0 ; i < b.getEndingSlots().length; i++){
+			for(int l = 0 ; l < b.getEndingSlots()[i].length;l++){
+				for(int k =0 ; k < b.getEndingSlots()[i][l].getInsideToken().size() ; k++){
+					b.getEndingSlots()[i][l].getInsideToken().get(k).setAvailable(false);
+				}
+			}
+		}
+		
 	}
 }

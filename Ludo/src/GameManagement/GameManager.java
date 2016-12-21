@@ -1,16 +1,18 @@
 package GameManagement;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import javax.swing.Timer;
+import com.sun.org.glassfish.gmbal.GmbalException;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-public class GameManager {
+public class GameManager extends Thread{
 	private GamePanel gp;
 	private MovementManager mm;
 	private FinishManager fm;
@@ -21,9 +23,13 @@ public class GameManager {
 	private Stage primary;
 	/*private ReentrantLock lock1; // For Rolling a die
 	private ReentrantLock lock2; // For checking if the token is selected*/
-	
-	
+	boolean isFinishedTurn ;
+	int playerTurn;
+	int numberOfPlayer;
+	boolean isMoved;
+
 	public GameManager(double scale, Stage primaryStage){
+		super();
 		this.scale = scale;
 		mm = new MovementManager();
 		fm = new FinishManager();
@@ -33,39 +39,98 @@ public class GameManager {
 		primary = primaryStage;
 		/*lock1 = new ReentrantLock();
 		lock2 = new ReentrantLock();*/
-		gp = new GamePanel(scale);
-		
-	}
-	
-	public boolean gameLoop(){
-		boolean end = false;
+		gp = new GamePanel(scale,this);
 		gp.start(primary);
-		mm.isAvailable(0, gp.getBoard(), 6);
-		mm.isAvailable(1, gp.getBoard(), 6);
-		mm.move(0, gp.getBoard(), -1, 6,0);
+		isFinishedTurn = true;
+		playerTurn = 0;
+		numberOfPlayer = 4;
+		isMoved = false;
 		
-		mm.move(1, gp.getBoard(), -1, 6,0);
-		mm.move(1,gp.getBoard(),13,50,0);
-		mm.move(1,gp.getBoard(),11,2,0);
+
+	}
+
+	public boolean turn(int index,int rolled){
+		boolean end = false;
+		
+		mm.move(0,gp.getBoard(),index,rolled,0);
 		gp.updateTokens();
-		System.out.println(gp.getBoard().getHouses().get(0).toString());
-		
-		
-		/*while(!end){
-			Timer timer = new Timer(1000, new MyActionListener());
-			end = fm.endGame(gp.getBoard().getEndingSlots());
-			System.out.println(end);
-		}*/
-		return end;
+		return fm.endGame(gp.getBoard().getEndingSlots());
+
+	}
+
+
+	public void run() {
+		Timeline rollWatier = new Timeline(new KeyFrame(Duration.seconds(0.3), new RolledWaiter()));
+		rollWatier.setCycleCount(Timeline.INDEFINITE);
+		rollWatier.play();
+		Timeline clickWaiter = new Timeline(new KeyFrame(Duration.seconds(0.3), new ClickWaiter()));
+		clickWaiter.setCycleCount(Timeline.INDEFINITE);
+		clickWaiter.play();
+
 	}
 	
-	class MyActionListener implements ActionListener{
+	private class RolledWaiter implements EventHandler{
+
+
+		public RolledWaiter(){
+			
+		}
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			if(gp.isRolled()){
-				gp.setRolled(false);
+		public void handle(Event arg0) {
+			if(isFinishedTurn){
+				if(gp.isRolled()){
+					System.out.println(playerTurn);
+					boolean flag = mm.isAvailable(playerTurn, gp.getBoard(), gp.getBoard().getDie().getfaceValue());
+					if(flag == false){
+						gp.updateTokens();
+						gp.setRolled(false);
+						playerTurn = (playerTurn + 1)%numberOfPlayer;
+					}else{
+						gp.updateTokens();
+						isFinishedTurn = false;
+					}
+					
+				}
 			}
 		}
 		
 	}
+	
+	private class ClickWaiter implements EventHandler{
+
+		public ClickWaiter(){
+			
+		}
+		@Override
+		public void handle(Event arg0) {
+			if(!isFinishedTurn){
+				if(gp.isSelected()){
+					boolean flag = false;
+					int[] clicked = gp.getClicked_token();
+					if(clicked[0] == 2){
+						flag = mm.move(clicked[1],gp.getBoard(),-1,gp.getBoard().getDie().getfaceValue(),0);
+					}
+					else if(clicked[0] == 0){
+						flag = mm.move(clicked[1],gp.getBoard(),clicked[2],gp.getBoard().getDie().getfaceValue(),clicked[3]);
+					}
+					else if(clicked[0] == 1){
+						flag = mm.move(clicked[1],gp.getBoard(),clicked[2]+52,gp.getBoard().getDie().getfaceValue(),clicked[3]);
+					}
+					if(flag == true){
+						gp.updateTokens();
+						mm.makeUnAvaliable(gp.getBoard());
+						gp.setRolled(false);
+						isFinishedTurn = true;
+						playerTurn = (playerTurn + 1)%numberOfPlayer;
+					}
+					else{
+						gp.updateTokens();
+					}
+				}
+			}
+			
+		}
+		
+	}
+
 }
