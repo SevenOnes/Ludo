@@ -1,23 +1,26 @@
-package Panels;
-
 import java.awt.Insets;
-import java.awt.Label;
-import java.awt.TextArea;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -25,15 +28,19 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.geometry.*;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
+import java.util.List;
 import java.util.Scanner;
-
-
+import java.util.concurrent.atomic.AtomicInteger;
 
 	public class HelpPanel extends Application {
 
@@ -48,10 +55,11 @@ import java.util.Scanner;
 
 		Path helpPatch = Paths.get("help.txt");
         
-    	TextArea helpArea;
+    	Text helpText;
+    	TextArea helpTextArea;
     	
 		@Override
-		public void start(Stage helpStage) {
+		public void start(Stage helpStage){
 			
 			BorderPane bpane = new BorderPane();
 	        Scene scene = new Scene(root, 1200*scale, 800*scale, Color.WHITE);
@@ -78,126 +86,27 @@ import java.util.Scanner;
 	        menuBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
 				  MainMenu mMenu = new MainMenu();
-				// mMenu.primaryStageMain.start(mMenu.primaryStageMain);
-				//  MainMenu.primaryStageMain = MainMenu.primaryStageMain;
-				 // (MainMenu.primaryStageMain).show();
-				  //helpStage = MainMenu.primaryStageMain;
-				 // helpStage.show(MainMenu.primaryStageMain);
-		//mMenu.start(helpStage);
-				  //mMenu.start(mMenu.primaryStageMain);
-		    			//MenuManager.swapPanels(new MainMenu());//Returns back to menu
-				 // start(mMenu.primaryStageMain);
-				  //helpStage.
-			  });
+				  mMenu.start(helpStage);
+	        });
 
+	        helpText = new Text("How To Play");
+	        helpText.setFill(Color.ORANGE);
+	        helpText.setEffect(shadow);
+	        Font arial = Font.font("Arial", 40);
+	        helpText.setFont(arial);
+
+	        helpTextArea = new TextArea();
 	        
-	     /*   Node label;
-	    	File text = new File("Data\\HowToPlay.txt");
-	    	try
-	    	{
-	    		Scanner fileScan = new Scanner(text);
-	    		String line;
-
-	    		while(fileScan.hasNextLine())
-	    		{
-	    			line = fileScan.nextLine();
-	    			label = new Node(line);
-	   		 	}
-	    	}
-	    	catch (FileNotFoundException exception)
-	    	{
-	    		String line = "File Not Found.";
-	    		label = new Label(line);
-	    	}
-*/
-
-	        helpArea = new TextArea();
-	 /*       
-	     // load file initally
-	        if (Files.exists(watchPath)) {
-	            loadFile();
-	        }
-
-	        // watch file
-	        WatchThread watchThread = new WatchThread(watchPath);
-	        watchThread.setDaemon( true);
-	        watchThread.start();
-
-	    }
-
-	    private void loadFile() {
-
-	        try {
-
-	            String stringFromFile = Files.lines(watchPath).collect(Collectors.joining("\n"));
-	            textArea.setText(stringFromFile);
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-
-	    }
-
-	    private class WatchThread extends Thread {
-
-	        Path watchPath;
-
-	        public WatchThread(Path watchPath) {
-	            this.watchPath = watchPath;
-	        }
-
-	        public void run() {
-
-	            try {
-
-	                WatchService watcher = FileSystems.getDefault().newWatchService();
-	                WatchKey key = watchPath.getParent().register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
-
-	                while (true) {
-
-	                    // wait for key to be signaled
-	                    try {
-	                        key = watcher.take();
-	                    } catch (InterruptedException x) {
-	                        return;
-	                    }
-
-	                    for (WatchEvent<?> event : key.pollEvents()) {
-
-	                        WatchEvent.Kind<?> kind = event.kind();
-
-	                        if (kind == StandardWatchEventKinds.OVERFLOW) {
-	                            continue;
-	                        }
-
-	                        WatchEvent<Path> ev = (WatchEvent<Path>) event;
-
-	                        Path path = ev.context();
-
-	                        if (!path.getFileName().equals(watchPath.getFileName())) {
-	                            continue;
-	                        }
-
-	                        // process file
-	                        Platform.runLater(() -> {
-	                            loadFile();
-	                        });
-
-	                    }
-
-	                    boolean valid = key.reset();
-	                    if (!valid) {
-	                        break;
-	                    }
-
-	                }
-	            } catch (IOException x) {
-	                System.err.println(x);
-	            }
-	        }
-	    }
-
-	        */
+	        helpTextArea.setText("Help");
+	        helpTextArea.setDisable(true);
+	        helpTextArea.setMouseTransparent(false);
+	        helpTextArea.setFocusTraversable(false);
+	        Paint value0 = Paint.valueOf("FFFFFF");
+	        BackgroundFill bfill = new BackgroundFill(value0, null, null);
+	        Background bHelp = new Background(bfill);
+	        helpTextArea.setBackground(bHelp);
+	        helpTextArea.setStyle("-fx-font: 30 arial; -fx-base: #000000;");
+	        
 	        VBox vbox = new VBox();
 
 	        vbox.setLayoutX(scene.getWidth()/2-120*scale);
@@ -208,10 +117,14 @@ import java.util.Scanner;
 
 	        vbox.setScaleY(scale);
 	        
+	        //vbox.getChildren().add(helpText);
 	        vbox.getChildren().add(menuBtn);
-	        
-	      //  bpane.setCenter(helpArea);
-	        
+	        //bpane.getChildren().add(helpText);
+	        bpane.setTop(helpText);
+	        bpane.setLeft(helpTextArea);
+	        bpane.setLayoutX(scene.getWidth()-1100*scale);
+	        bpane.setLayoutY(scene.getHeight()-700*scale);
+	        //bpane.setBottom(vbox);
 	        root.getChildren().add(background);
 	        root.getChildren().add(bpane);
 	        root.getChildren().add(vbox);
