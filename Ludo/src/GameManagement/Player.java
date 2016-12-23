@@ -10,8 +10,7 @@ public class Player {
 	private int id;
 	private int point;
 	private String name;
-	
-	
+
 	//public static ArrayList<Player> players = new ArrayList<Player>();
 	
 	public Player()

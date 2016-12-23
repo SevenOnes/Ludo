@@ -10,8 +10,8 @@ public class FinishManager {
 		return false;
 	}
 	
-	public boolean endGame(Slot[][] slots){
-		for(int i = 0; i < slots.length; i++){
+	public boolean endGame(Slot[][] slots,int numberOfPlayer){
+		for(int i = 0; i < numberOfPlayer; i++){
 			if(!endPlayer(slots[i]))
 				return false;
 		}

@@ -1,12 +1,13 @@
 package GameManagement;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import com.sun.org.glassfish.gmbal.GmbalException;
-
+import GameEntities.Token;
+import Panels.MainMenu;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
@@ -26,16 +27,23 @@ public class GameManager extends Thread{
 	boolean isFinishedTurn ;
 	int playerTurn;
 	int numberOfPlayer;
+	Stage primaryStage;
+	Timeline rollWaiter;
+	Timeline clickWaiter;
+	boolean showFlag;
 	boolean isMoved;
-
-	public GameManager(double scale, Stage primaryStage){
+	
+	ArrayList<Integer> finishedPlayer ;
+	public GameManager(double scale, Stage primaryStage,ArrayList<Player> players){
 		super();
 		this.scale = scale;
 		mm = new MovementManager();
 		fm = new FinishManager();
 		sm = new SoundManager();
 		filem = new FileManager();
-		players = new ArrayList<Player>(); // empty for now we will get it from above level
+		
+		finishedPlayer = new ArrayList<Integer>();
+		this.players = players;
 		primary = primaryStage;
 		/*lock1 = new ReentrantLock();
 		lock2 = new ReentrantLock();*/
@@ -43,27 +51,25 @@ public class GameManager extends Thread{
 		gp.start(primary);
 		isFinishedTurn = true;
 		playerTurn = 0;
-		numberOfPlayer = 4;
+		numberOfPlayer = players.size();
 		isMoved = false;
-		
+		showFlag = false;
 
 	}
 
-	public boolean turn(int index,int rolled){
-		boolean end = false;
-		
-		mm.move(0,gp.getBoard(),index,rolled,0);
-		gp.updateTokens();
-		return fm.endGame(gp.getBoard().getEndingSlots());
-
+	public void test(){
+		for(int i = 0;i < gp.getBoard().getHouses().get(0).getTokens().size();){
+			Token tmp = gp.getBoard().getHouses().get(0).retriveToken();
+			gp.getBoard().getSlots()[9].addInsideToken(tmp);
+		}
+		Token tmp = gp.getBoard().getHouses().get(1).retriveToken();
+		gp.getBoard().getSlots()[10].addInsideToken(tmp);
 	}
-
-
 	public void run() {
-		Timeline rollWatier = new Timeline(new KeyFrame(Duration.seconds(0.3), new RolledWaiter()));
-		rollWatier.setCycleCount(Timeline.INDEFINITE);
-		rollWatier.play();
-		Timeline clickWaiter = new Timeline(new KeyFrame(Duration.seconds(0.3), new ClickWaiter()));
+		rollWaiter = new Timeline(new KeyFrame(Duration.seconds(0.3), new RolledWaiter()));
+		rollWaiter.setCycleCount(Timeline.INDEFINITE);
+		rollWaiter.play();
+		clickWaiter = new Timeline(new KeyFrame(Duration.seconds(0.3), new ClickWaiter()));
 		clickWaiter.setCycleCount(Timeline.INDEFINITE);
 		clickWaiter.play();
 
@@ -77,12 +83,34 @@ public class GameManager extends Thread{
 		}
 		@Override
 		public void handle(Event arg0) {
-			if(isFinishedTurn){
+			if(isFinishedTurn && gp.isFinishedTurn()){
+				for(int i = 0; i< finishedPlayer.size();i++){
+					if(playerTurn == finishedPlayer.get(i)){
+						playerTurn = (playerTurn + 1)%numberOfPlayer;
+						i = 0;
+					}
+				}
+				gp.updateTokens();
+				if(!showFlag){
+					if(playerTurn == 0){
+						gp.showPlayerTurn(players.get(0).getName(),0);
+						showFlag = true;
+					}else if(playerTurn == 1){
+						gp.showPlayerTurn(players.get(1).getName(),1);
+						showFlag = true;
+					}else if(playerTurn == 2){
+						gp.showPlayerTurn(players.get(2).getName(),2);
+						showFlag = true;
+					}else if(playerTurn == 3){
+						gp.showPlayerTurn(players.get(3).getName(),3);
+						showFlag = true;
+					}
+				}
 				if(gp.isRolled()){
-					System.out.println(playerTurn);
 					boolean flag = mm.isAvailable(playerTurn, gp.getBoard(), gp.getBoard().getDie().getfaceValue());
 					if(flag == false){
 						gp.updateTokens();
+						showFlag = false;
 						gp.setRolled(false);
 						playerTurn = (playerTurn + 1)%numberOfPlayer;
 					}else{
@@ -103,7 +131,7 @@ public class GameManager extends Thread{
 		}
 		@Override
 		public void handle(Event arg0) {
-			if(!isFinishedTurn){
+			if(!isFinishedTurn && gp.isFinishedTurn()){
 				if(gp.isSelected()){
 					boolean flag = false;
 					int[] clicked = gp.getClicked_token();
@@ -112,16 +140,44 @@ public class GameManager extends Thread{
 					}
 					else if(clicked[0] == 0){
 						flag = mm.move(clicked[1],gp.getBoard(),clicked[2],gp.getBoard().getDie().getfaceValue(),clicked[3]);
+						gp.playTokenAnimation(0);
 					}
 					else if(clicked[0] == 1){
 						flag = mm.move(clicked[1],gp.getBoard(),clicked[2]+52,gp.getBoard().getDie().getfaceValue(),clicked[3]);
+						gp.playTokenAnimation(1);
 					}
 					if(flag == true){
-						gp.updateTokens();
+						boolean check = fm.endPlayer(gp.getBoard().getEndingSlots()[playerTurn]);
+						if(check){
+							finishedPlayer.add(playerTurn);
+						}
 						mm.makeUnAvaliable(gp.getBoard());
+						showFlag = false;
 						gp.setRolled(false);
+						if(gp.getBoard().getDie().getfaceValue() != 6){
+							playerTurn = (playerTurn + 1)%numberOfPlayer;
+						}
+						if(finishedPlayer.size() == numberOfPlayer-1){
+							for(int i = 0; i < finishedPlayer.size();i++){
+								players.get(finishedPlayer.get(i)).setPoint(numberOfPlayer-i-1);
+								System.out.println(players.get(0).getPoint());
+							}
+							rollWaiter.stop();
+							clickWaiter.stop();
+							try {
+								filem.writeFile(filem.update(players, filem.readFile()));
+							} catch (FileNotFoundException e) {
+								
+							} catch (IOException e) {
+								
+								
+							}
+							finally{
+								MainMenu mm = new MainMenu();
+								mm.start(primary);
+							}
+						}
 						isFinishedTurn = true;
-						playerTurn = (playerTurn + 1)%numberOfPlayer;
 					}
 					else{
 						gp.updateTokens();

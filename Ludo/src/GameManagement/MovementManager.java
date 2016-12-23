@@ -72,7 +72,6 @@ public class MovementManager {
 	}
 
 	public boolean move (int playerID,Board b, int initialPos, int faceValue,int indexOfElement){
-		System.out.println(playerID + " " + initialPos + " " + faceValue + " " + indexOfElement);
 		if(initialPos == -1){
 			if(!b.getHouses().get(playerID).isEmpty()){
 				Token token = b.getHouses().get(playerID).getTokens().get(0);
@@ -130,7 +129,7 @@ public class MovementManager {
 					}else{
 						if((initialPos+faceValue)%52 == 0 || initialPos+faceValue == 13 
 								|| initialPos+faceValue == 26 || initialPos+faceValue == 39){
-							b.getSlots()[initialPos+faceValue].addInsideToken(token);
+							b.getSlots()[(initialPos+faceValue)%52].addInsideToken(token);
 						}else if(b.getSlots()[(initialPos+faceValue)%52].isOccupied()){
 							if(b.getSlots()[(initialPos+faceValue)%52].getInsideToken().get(0).getColor().equals(token.getColor())){
 								b.getSlots()[(initialPos+faceValue)%52].addInsideToken(token);
@@ -182,7 +181,6 @@ public class MovementManager {
 					}
 				}else if(playerID == 3){
 
-					System.out.println(initialPos +" , " + faceValue);
 					if(initialPos <= 37 &&faceValue + initialPos > 37){
 						b.getEndingSlots()[playerID][faceValue + initialPos-37].addInsideToken(token);
 					}else{

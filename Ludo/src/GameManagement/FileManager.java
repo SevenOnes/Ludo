@@ -163,20 +163,18 @@ public class FileManager {
 	// For testing, it writes arrayList into the txt file
 	public static void main(String[] args) throws IOException
 	{
-		Player P1 = new Player("Al1", 56, 21);
+		Player P1 = new Player("Al1", 56, 20);
 		Player P2 = new Player("Alp1", 21, 32);
 		Player P3 = new Player("Berk", 21, 210);
 		Player P4 = new Player("asd1", 10 , 123);
-		Player P5 = new Player("Ahmet1", 123, 123);
 		//System.out.println(p.players.size());
 		ArrayList<Player> players = new ArrayList<Player>();
 		players.add(P1);
 		players.add(P2);
 		players.add(P3);
 		players.add(P4);
-		players.add(P5);
 		FileManager f = new FileManager();
-		//f.writeFile(p.players);
+		//f.writeFile(players);
 		ArrayList<Player> temp = f.readFile();
 		temp = f.update(players, temp);
 		for(int i=0; i< temp.size(); i++)
@@ -191,7 +189,5 @@ public class FileManager {
 		tmp = f.readSetting();
 		System.out.println(tmp[0]);
 		System.out.println(tmp[1]);
-
-
 	}
 }

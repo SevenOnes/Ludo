@@ -1,5 +1,6 @@
 package Panels;
 
+import GameManagement.FileManager;
 import GameManagement.GameManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -35,13 +36,13 @@ import javafx.util.Duration;
 public class MainMenu extends Application {
 
 	 DropShadow shadow = new DropShadow();
-	 double scale = 1;
-	 
+	 private static double scale;
 	 public MainMenu(){
-		 scale = 1;
 	 }
-	 public static Stage primaryStageMain;
 
+	 public static void init(double sc){
+		 scale = sc;
+	 }
     @Override   
     public void start(Stage primaryStage){
 
@@ -51,10 +52,6 @@ public class MainMenu extends Application {
 
 
         primaryStage.setScene(scene);
-
-        
-
-        primaryStage.initStyle(StageStyle.UNDECORATED);
 
         
         Rectangle closeBtn = new Rectangle(30*scale,30*scale,Color.RED);
@@ -213,8 +210,8 @@ public class MainMenu extends Application {
 
                   public void handle(MouseEvent e) {
 
-                	  GameManager gm = new GameManager(1, primaryStage);
-
+                	  GameEntryPanel gm = new GameEntryPanel(scale);
+                	  gm.start(primaryStage);
 
                   }
 
@@ -228,7 +225,7 @@ public class MainMenu extends Application {
                   @Override
 
                   public void handle(MouseEvent e) {
-                	  HelpPanel hp = new HelpPanel(1);
+                	  HelpPanel hp = new HelpPanel(scale);
                 	  hp.start(primaryStage);
 
 
@@ -243,7 +240,7 @@ public class MainMenu extends Application {
                   @Override
 
                   public void handle(MouseEvent e) {
-                	  LeaderBoardPanel lbp = new LeaderBoardPanel(1);
+                	  LeaderBoardPanel lbp = new LeaderBoardPanel(scale);
                 	  lbp.start(primaryStage);
 
 
@@ -258,7 +255,7 @@ public class MainMenu extends Application {
                   @Override
 
                   public void handle(MouseEvent e) {
-                	  CreditsPanel cp = new CreditsPanel(1);
+                	  CreditsPanel cp = new CreditsPanel(scale);
                 	  cp.start(primaryStage);
 
 
@@ -303,10 +300,8 @@ public class MainMenu extends Application {
         timeline.play();
 
         root.getChildren().add(closeBtn);
-        
-        primaryStageMain = primaryStage;
 
-        primaryStageMain.show();
+        primaryStage.show();
 
         
 
@@ -317,17 +312,11 @@ public class MainMenu extends Application {
     
 
 public static void main(String[] args) {
-
-        launch(args);
+		FileManager fm = new FileManager();
+		init((double)(fm.readSetting()[0])/3);
+		launch(args);
 
     }
 
-
-
-class WindowButtons extends Rectangle {
-
-    
-
-}
 
 }
