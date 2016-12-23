@@ -12,7 +12,7 @@ public class Player {
 	private String name;
 	
 	
-	public static ArrayList<Player> players = new ArrayList<Player>();
+	//public static ArrayList<Player> players = new ArrayList<Player>();
 	
 	public Player()
 	{
@@ -25,7 +25,7 @@ public class Player {
 		this.id = id;
 		this.point = point;
 		
-		players.add(this);
+		
 	}
 	//Not required
 	/*public ArrayList<Player> getPlayerList()
@@ -74,15 +74,9 @@ public static void main(String[] args) throws IOException
 	//Player P1 = new Player("asd", 1221, 12210);
 	//Player P2 = new Player("Basd", 2441, 210);
 	Player P3 = new Player("Ahmet", 23, 213);
-	System.out.println(players.size());
+	//System.out.println(players.size());
 	Player p = new Player();
 
-	for(int i=0; i<players.size();i++)
-	{
-		System.out.println((players.get(i)));
-	}
-	FileManager f = new FileManager();
-	f.writeFile(players);
 }
 
 
