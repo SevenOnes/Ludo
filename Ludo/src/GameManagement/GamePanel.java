@@ -642,15 +642,15 @@ public class GamePanel extends Application {
 					circle.setLayoutY(y);
 					circle.addEventHandler(MouseEvent.MOUSE_CLICKED,
 							new popUpTokens( arr[index].getInsideToken(), 0, player, index, x, y, (Color)circle.getFill()));
-					if (circle != null)
+					if (!(i == 5 || i == 19 || i == 33 || i == 47) && circle != null)
 						slot_tokens.getChildren().add(circle);
 
 				}
 				
-			}
-			if (!(i == 5 || i == 19 || i == 33 || i == 47)) {
+			}if (!(i == 5 || i == 19 || i == 33 || i == 47)) {
 				index++;	
 			}
+			
 			// for mapping
 			if (i < 5) {
 				x += 50 * scale;
