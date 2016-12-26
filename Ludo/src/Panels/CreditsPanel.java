@@ -3,6 +3,7 @@ package Panels;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import GameManagement.SoundManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -27,14 +28,15 @@ import javafx.stage.Stage;
 
 
 	public class CreditsPanel extends Application {
-
+		SoundManager sm;
 		DropShadow shadow = new DropShadow();
 		private double scale;
 		Group root = new Group();
 
-		public CreditsPanel(double scale){
+		public CreditsPanel(double scale, SoundManager sm){
 			this.scale = scale;
 			root = new Group();
+			this.sm = sm;
 		}
 
 		Path creditsPatch = Paths.get("credits.txt");
@@ -69,7 +71,7 @@ import javafx.stage.Stage;
 	        
 	        menuBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
-				  MainMenu mMenu = new MainMenu();
+				  MainMenu mMenu = new MainMenu(sm);
 				  mMenu.start(creditsStage);
 	        });
 

@@ -1,7 +1,7 @@
 package GameManagement;
 
 import java.util.ArrayList;
-import GameManagement.FileManager;
+import GameManagement.TxtAdapter;
 import java.io.IOException;
 
 

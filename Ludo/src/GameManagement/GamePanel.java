@@ -5,6 +5,7 @@ import GameEntities.Board;
 import GameEntities.House;
 import GameEntities.Slot;
 import GameEntities.Token;
+import Panels.MainMenu;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -54,13 +55,14 @@ public class GamePanel extends Application {
 	private Group die_group;
 
 	private int[] clicked_token;
-
+	Stage primaryStage;
 	final int TOKENINHOUSE = 4;
 
 	GameManager gm;
 	Timeline playerTurnAnimation;
 	Timeline rollAnime;
 	Timeline animeOfMovement;
+	Timeline finishAnimation;
 	Group turnGroup = new Group();
 	boolean animeFinished;
 	Image[] dieImages;
@@ -70,12 +72,11 @@ public class GamePanel extends Application {
 	boolean selected;
 	boolean rolled;
 	boolean smallAnime;
+	boolean endingAnimation;
 
 	public GamePanel(double scale,GameManager gm){
 
 		board = new Board(1);
-		/*this.lock1 = lock1;
-		this.lock2 = lock2;*/
 		this.scale = scale;
 		rolled = false;
 		root = new Group();
@@ -101,12 +102,14 @@ public class GamePanel extends Application {
 			String str = "file:die_black_"+(i+1)+".png";
 			dieImages[i] = new Image(str,116*scale,120*scale,true, true);
 		}
+		endingAnimation = false;
 
 	}
 	public void start(Stage primaryStage) {
 
 		Scene scene = new Scene(big_root, 1200 * scale, 800 * scale, Color.WHITE);
 		primaryStage.setScene(scene);
+		this.primaryStage = primaryStage;
 
 		Rectangle closeBtn = new Rectangle(30 * scale, 30 * scale, Color.RED);
 
@@ -386,25 +389,6 @@ public class GamePanel extends Application {
 		root.getChildren().add(house_blue);
 		root.getChildren().add(house_red);
 		root.getChildren().add(house_yellow);
-		/*Token tmp = board.getHouses().get(1).retriveToken();
-		Slot[] tmp2 = board.getSlots();
-		tmp2[0].addInsideToken(tmp);
-		tmp = board.getHouses().get(0).retriveToken();
-		tmp2[0].addInsideToken(tmp);
-		tmp = board.getHouses().get(1).retriveToken();
-		tmp2[0].addInsideToken(tmp);
-		tmp = board.getHouses().get(2).retriveToken();
-		tmp2[0].addInsideToken(tmp);
-		tmp = board.getHouses().get(3).retriveToken();
-		tmp2[0].addInsideToken(tmp);
-		tmp = board.getHouses().get(0).retriveToken();
-		tmp2[2].addInsideToken(tmp);
-		tmp = board.getHouses().get(0).retriveToken();
-		tmp2[5].addInsideToken(tmp);
-		tmp = board.getHouses().get(1).retriveToken();
-		board.getEndingSlots()[1][2].addInsideToken(tmp);
-		tmp = board.getHouses().get(1).retriveToken();
-		board.getEndingSlots()[1][2].addInsideToken(tmp);*/
 		updateTokens();
 		root.getChildren().add(die_group);
 		big_root.getChildren().add(root);
@@ -442,7 +426,7 @@ public class GamePanel extends Application {
 			public void handle(MouseEvent e) {
 				if(animeFinished){
 					if(!isRolled()){
-
+						SoundManager.dieRoll();
 						rollAnime =  new Timeline(new KeyFrame(Duration.seconds(0.05), new rollAnimation()));
 						rollAnime.setCycleCount(10);
 						rollAnime.play();
@@ -646,11 +630,11 @@ public class GamePanel extends Application {
 						slot_tokens.getChildren().add(circle);
 
 				}
-				
-			}if (!(i == 5 || i == 19 || i == 33 || i == 47)) {
+
+			}
+			if (!(i == 5 || i == 19 || i == 33 || i == 47)) {
 				index++;	
 			}
-			
 			// for mapping
 			if (i < 5) {
 				x += 50 * scale;
@@ -893,7 +877,7 @@ public class GamePanel extends Application {
 			}else if(clicked_token[1] == 3){
 				str += "," + "Blue";
 			}
-			
+
 			for(int i = 0; i < slot_tokens.getChildren().size();i++){
 				if(slot_tokens.getChildren().get(i).getId().equals(str)){
 					index = i;
@@ -938,12 +922,13 @@ public class GamePanel extends Application {
 		}
 		@Override
 		public void handle(Event event) {
-			if(smallAnime){
+			if(smallAnime){				
 				smallAnime = false;
 				if(count == board.getDie().getfaceValue()){
 					animeOfMovement.stop();
 					animeFinished = true;
 				}else{
+					SoundManager.moveToken();
 					int arrow = 2;
 					int type = 0;
 					if(clicked_token[0] == 0){
@@ -952,7 +937,7 @@ public class GamePanel extends Application {
 								|| (clicked_token[2] >=10 && clicked_token[2] <12)
 								|| clicked_token[2] == 51){
 							if(slot_tokens.getChildren().get(index).getId().contains("Yellow") && clicked_token[2] == 11){
-								System.out.println();
+								//System.out.println();
 								arrow = 3;
 							}else{
 								arrow = 0; //right
@@ -969,10 +954,10 @@ public class GamePanel extends Application {
 								|| (clicked_token[2] >43 && clicked_token[2] <49)
 								|| (clicked_token[2] >=36 && clicked_token[2] <38)){
 							if(slot_tokens.getChildren().get(index).getId().contains("Blue") && clicked_token[2] == 37){
-									arrow = 2;
-								}else{
-									arrow = 1; //left
-								}
+								arrow = 2;
+							}else{
+								arrow = 1; //left
+							}
 						}else if((clicked_token[2] > 4 && clicked_token[2] < 10) 
 								|| (clicked_token[2] >=49 && clicked_token[2] <51)
 								|| (clicked_token[2] >=38 && clicked_token[2] <43)){
@@ -991,9 +976,9 @@ public class GamePanel extends Application {
 								arrow = 3;	 //bottom
 							}
 						}
-						System.out.println(clicked_token[2]);
+						//System.out.println(clicked_token[2]);
 						clicked_token[2] = (clicked_token[2]+1)%52;
-					}else{
+					}else if(clicked_token[0] == 1){
 						if(clicked_token[1] == 0){
 							arrow = 0;
 						}else if(clicked_token[1] == 1){
@@ -1098,7 +1083,7 @@ public class GamePanel extends Application {
 					slot_tokens.getChildren().get(index).setTranslateY(0);
 					smallAnime = true;
 				}
-			}else{
+			}else if(type == 1){
 				endingSlot_tokens.getChildren().get(index).setTranslateX(x);
 				endingSlot_tokens.getChildren().get(index).setTranslateY(y);
 				count++;
@@ -1159,9 +1144,68 @@ public class GamePanel extends Application {
 		}
 
 	}
-	public boolean isFinishedTurn() {
+	public boolean isAnimeFinished() {
 		return animeFinished;
 	}
+	public void playEndAnimation(ArrayList<Player> players, ArrayList<Integer> finishedPlayer) {
+
+		Group endGroup = new Group();
+		root.setEffect(new BoxBlur(10,10,3));
+		Text t = new Text();
+		t.setVisible(true);
+		t.setFont(Font.font("Verdana", FontWeight.BOLD, 70*scale));
+		int index = finishedPlayer.get(0);
+		t.setText(players.get(index).getName() + " WINS!");
+		if(index == 0){
+			t.setFill(Color.RED);
+		}else if(index == 1){
+			t.setFill(Color.YELLOW);
+		}else if(index == 2){
+			t.setFill(Color.GREEN);
+		}else if(index == 3){
+			t.setFill(Color.BLUE);
+		}
+		DropShadow ds = new DropShadow();
+		ds.setOffsetY(3.0f);
+		ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
+		t.setLayoutX(300*scale);
+		t.setLayoutY(375*scale);
+		t.setEffect(ds);
+		endGroup.getChildren().add(t);
+		finishAnimation = new Timeline(new KeyFrame(Duration.seconds(1), new endAnimation(endGroup)));
+		finishAnimation.setCycleCount(2);
+		finishAnimation.play();
+	}
+
+	private class endAnimation implements EventHandler{
+
+		Group g;
+		int i = 0;
+		public endAnimation(Group g) {
+			this.g = g;
+			big_root.getChildren().add(g);
+		}
+		@Override
+		public void handle(Event arg0) {
+			System.out.println(i);
+			if(i == 0){
+				i++;
+			}else{
+				endingAnimation = true;
+				MainMenu mm = new MainMenu();
+				mm.start(primaryStage);
+			}
+
+		}
+
+	}
+
+
+	public boolean isEndingAnimation() {
+		return endingAnimation;
+	}
+
+
 
 
 }

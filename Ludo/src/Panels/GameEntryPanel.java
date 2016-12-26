@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import GameManagement.GameManager;
 import GameManagement.Player;
+import GameManagement.SoundManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -24,14 +25,16 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class GameEntryPanel extends Application {
-
+	
+	SoundManager sm;
 	DropShadow shadow = new DropShadow();
 	private double scale;
 	Group root = new Group();
 
-	public GameEntryPanel(double scale){
+	public GameEntryPanel(double scale, SoundManager sm){
 		this.scale = scale;
 		root = new Group();
+		this.sm = sm;
 	}
 
 	TextArea TxtAr1, TxtAr2, TxtAr3, TxtAr4;
@@ -122,13 +125,13 @@ public class GameEntryPanel extends Application {
 		menuBtn.setFont(Font.font("Verdana", FontWeight.NORMAL, 30*scale));
 		menuBtn.setStyle("-fx-base: #F5F5DC;");
 		menuBtn.setAlignment(Pos.CENTER);
-		menuBtn.setLayoutX(scene.getWidth()/2-150*scale);
-		menuBtn.setLayoutY(scene.getHeight()-59*scale);
+		menuBtn.setLayoutX(600-150*scale);
+		menuBtn.setLayoutY(800-85*scale);
 
 
 		menuBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
-			MainMenu mMenu = new MainMenu();
+			MainMenu mMenu = new MainMenu(sm);
 			mMenu.start(entryStage);
 		});
 
@@ -150,7 +153,7 @@ public class GameEntryPanel extends Application {
 				players.add(new Player(TxtAr4.getText(),0,0));
 			}
 			if(flag){
-				GameManager gm = new GameManager(scale,entryStage,players);
+				GameManager gm = new GameManager(scale,entryStage,players, this.sm);
 				gm.run();	
 			}
 			else{

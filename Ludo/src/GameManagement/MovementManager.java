@@ -78,6 +78,7 @@ public class MovementManager {
 				if(token.isAvailable()){
 					token = b.getHouses().get(playerID).retriveToken();
 					b.getSlots()[playerID*13].addInsideToken(token);
+					SoundManager.tokenOut();
 					return true;
 				}
 			}
@@ -109,10 +110,13 @@ public class MovementManager {
 								for(int i = 0; i < b.getSlots()[initialPos+faceValue].getInsideToken().size();){
 									Token eatenToken = b.getSlots()[initialPos+faceValue].retriveToken(0);
 									if(eatenToken.getColor().equals("Yellow")){
+										SoundManager.killSound();
 										b.getHouses().get(1).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Green")){
+										SoundManager.killSound();
 										b.getHouses().get(2).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Blue")){
+										SoundManager.killSound();
 										b.getHouses().get(3).addToken(eatenToken);
 									}
 								}
@@ -137,10 +141,13 @@ public class MovementManager {
 								for(int i = 0; i < b.getSlots()[(initialPos+faceValue)%52].getInsideToken().size();){
 									Token eatenToken = b.getSlots()[(initialPos+faceValue)%52].retriveToken(0);
 									if(eatenToken.getColor().equals("Red")){
+										SoundManager.killSound();
 										b.getHouses().get(0).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Green")){
+										SoundManager.killSound();
 										b.getHouses().get(2).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Blue")){
+										SoundManager.killSound();
 										b.getHouses().get(3).addToken(eatenToken);
 									}
 								}
@@ -165,10 +172,13 @@ public class MovementManager {
 								for(int i = 0; i < b.getSlots()[(initialPos+faceValue)%52].getInsideToken().size();){
 									Token eatenToken = b.getSlots()[(initialPos+faceValue)%52].retriveToken(0);
 									if(eatenToken.getColor().equals("Yellow")){
+										SoundManager.killSound();
 										b.getHouses().get(1).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Red")){
+										SoundManager.killSound();
 										b.getHouses().get(0).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Blue")){
+										SoundManager.killSound();
 										b.getHouses().get(3).addToken(eatenToken);
 									}
 								}
@@ -194,10 +204,13 @@ public class MovementManager {
 								for(int i = 0; i < b.getSlots()[(initialPos+faceValue)%52].getInsideToken().size();){
 									Token eatenToken = b.getSlots()[(initialPos+faceValue)%52].retriveToken(0);
 									if(eatenToken.getColor().equals("Yellow")){
+										SoundManager.killSound();
 										b.getHouses().get(1).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Green")){
+										SoundManager.killSound();
 										b.getHouses().get(2).addToken(eatenToken);
 									}else if(eatenToken.getColor().equals("Red")){
+										SoundManager.killSound();
 										b.getHouses().get(0).addToken(eatenToken);
 									}
 								}

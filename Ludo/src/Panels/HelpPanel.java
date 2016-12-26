@@ -3,6 +3,7 @@ package Panels;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import GameManagement.SoundManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -25,14 +26,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 	public class HelpPanel extends Application {
-
+		SoundManager sm;
 		DropShadow shadow = new DropShadow();
 		private double scale;
 		Group root = new Group();
 
-		public HelpPanel(double scale){
+		public HelpPanel(double scale, SoundManager sm){
 			this.scale = scale;
 			root = new Group();
+			this.sm = sm;
 		}
 
 		Path helpPatch = Paths.get("help.txt");
@@ -67,7 +69,7 @@ import javafx.stage.Stage;
 	        
 	        menuBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
-				  MainMenu mMenu = new MainMenu();
+				  MainMenu mMenu = new MainMenu(sm);
 				  mMenu.start(helpStage);
 	        });
 

@@ -15,6 +15,7 @@ public class FinishManager {
 			if(!endPlayer(slots[i]))
 				return false;
 		}
+		SoundManager.endGame();
 		return true;
 	}
 }
